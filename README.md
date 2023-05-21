@@ -3,6 +3,7 @@ Simple wine launcher application, for use with wine that has been installed in t
 
 ## Requirements
 
+- Gnome Terminal
 - Wine 32bit
 - Python 3
 - Tkinter Library
