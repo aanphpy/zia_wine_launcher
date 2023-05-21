@@ -184,6 +184,7 @@ class FormAbout(tk.Toplevel):
         str_about += "By Aan Kurniawan <aan.phpy@gmail.com> (L) 2023\n"
         str_about += "================================================================================\n"
         str_about += "- Just follow the menu and your intuition.\n"
+        str_about += "- Click the launcher on the list to running it.\n"
         str_about += "- Right-click on the launcher list for an additional menu\n"
         str_about += "\tuse the shortcut listed there.\n"
         str_about += "- You can config windows version\n"

@@ -14,7 +14,3 @@ Simple wine launcher application, for use with wine that has been installed in t
 ```shell
 python3 zia_wine_launcher.pyw
 ```
-
-### Windows
-
-Double click `zia_wine_launcher.pyw`
