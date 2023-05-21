@@ -328,6 +328,7 @@ class WinePrefixDirForm(tk.Toplevel):
 class FormAddLauncher(tk.Toplevel):
     LABEL_WIDTH = 15
     ROW_GAP = 5
+    APP_TYPES = ['windows', 'dos']
     parent = None
     wineprefix = None
     init_data = None
@@ -368,7 +369,8 @@ class FormAddLauncher(tk.Toplevel):
 
         row_type = ttk.Frame(self)
         label_type = ttk.Label(row_type, text='Type', width=self.LABEL_WIDTH, anchor='w')
-        self.entry_type = ttk.Entry(row_type)
+        self.entry_type = ttk.Combobox(row_type, textvariable=self.APP_TYPES[0], state='readonly')
+        self.entry_type['values'] = self.APP_TYPES
 
         row_program = ttk.Frame(self)
         label_program = ttk.Label(row_program, text='Program', width=self.LABEL_WIDTH, anchor='w')
@@ -387,7 +389,7 @@ class FormAddLauncher(tk.Toplevel):
             self.entry_name.insert(0, self.init_data.get('name', None))
             self.entry_label.insert(0, self.init_data.get('label', None))
             self.entry_category.insert(0, self.init_data.get('category', None))
-            self.entry_type.insert(0, self.init_data.get('type', None))
+            self.entry_type.current(self.APP_TYPES.index(self.init_data.get('type', self.APP_TYPES[0])))
             self.entry_params.insert(0, self.init_data.get('params', None))
             self.entry_program.insert(0, self.init_data.get('program', None))
 
@@ -503,16 +505,14 @@ class FormContainer(tk.Toplevel):
 
         fmain = ttk.Frame(self, border=5)
         fmain.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        # fmain.pack_propagate(0)
 
         self.container = tk.StringVar(self)
         self.container.set(self.parent.containers[0])
 
         fcontainers = ttk.Frame(fmain)
-        # self.dropdown_containers = tk.OptionMenu(fcontainers, self.container, *self.parent.containers)
         self.dropdown_containers = ttk.Combobox(fcontainers, textvariable=self.container, state='readonly')
         self.dropdown_containers['values'] = self.parent.containers
-        button_add = ttk.Button(fcontainers, text='Add', command=self.add_container)
+        button_add = ttk.Button(fcontainers, text='Add Container', command=self.add_container)
         button_run_explorer = ttk.Button(fcontainers, text='Run EXE/Installer', command=self.run_explorer)
         button_add_launcher = ttk.Button(fcontainers, text='Add Launcher', command=self.add_launcher)
         button_tools = ttk.Button(fcontainers, text='Tools', command=self.run_tools)
@@ -553,10 +553,6 @@ class FormContainer(tk.Toplevel):
         if wineprefix not in self.parent.containers:
             self.parent.containers.append(wineprefix)
             self.dropdown_containers['values'] = self.parent.containers
-            # self.dropdown_containers['menu'].add_command(
-            #     label=wineprefix,
-            #     command=tk._setit(self.container, wineprefix))
-            # self.container.set(wineprefix)
             self.dropdown_containers.current(len(self.parent.containers) - 1)
 
     def add_launcher(self):
