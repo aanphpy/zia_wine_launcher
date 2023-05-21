@@ -1,2 +1,20 @@
-# zia_wine_launcher
-Simple wine launcher app, for use with installed wine on system.
+# Zia Wine Launcher
+Simple wine launcher application, for use with wine that has been installed in the system.
+
+## Requirements
+
+- Wine 32bit
+- Python 3
+- Tkinter Library
+
+## Running 
+
+### Linux
+
+```shell
+python3 zia_wine_launcher.pyw
+```
+
+### Windows
+
+Double click `zia_wine_launcher.pyw`
