@@ -121,7 +121,7 @@ class AppListbox(ttk.Frame):
         self.app_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.app_listbox.bind('<Double-Button>', self.parent.app_run)
+        self.app_listbox.bind('<Double-Button-1>', self.parent.app_run)
         self.app_listbox.bind('<KeyPress>', self.parent.app_update)
 
         self.populate()
@@ -233,6 +233,7 @@ class FormWineTools(tk.Toplevel):
         button_regedit = ttk.Button(fmain, text='Regedit', command=self.wine_regedit)
         button_explorer = ttk.Button(fmain, text='Explorer', command=self.wine_explorer)
         button_cmd = ttk.Button(fmain, text='CMD', command=self.wine_cmd)
+        button_notepad = ttk.Button(fmain, text='Notepad', command=self.wine_notepad)
         button_close = ttk.Button(fmain, text='Close', command=self.destroy)
 
         fmain.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
@@ -240,6 +241,7 @@ class FormWineTools(tk.Toplevel):
         button_regedit.pack(side=tk.TOP, fill=tk.X)
         button_explorer.pack(side=tk.TOP, fill=tk.X)
         button_cmd.pack(side=tk.TOP, fill=tk.X)
+        button_notepad.pack(side=tk.TOP, fill=tk.X)
         button_close.pack(side=tk.TOP, fill=tk.X)
 
         self.grab_set()
@@ -253,6 +255,9 @@ class FormWineTools(tk.Toplevel):
 
     def wine_explorer(self):
         os.system(DEFAULT_WINE_EXEC.format(self.wineprefix, 'explorer &'))
+
+    def wine_notepad(self):
+        os.system(DEFAULT_WINE_EXEC.format(self.wineprefix, 'notepad &'))
 
     def wine_cmd(self):
         terminal_path = '/usr/bin/gnome-terminal'
@@ -577,6 +582,7 @@ class ZiaApp(tk.Tk):
     KEY_E = 26
     KEY_C = 54
     KEY_D = 40
+    KEY_R = 27
     KEY_DELETE = 119
 
     app_config = None
@@ -621,6 +627,7 @@ class ZiaApp(tk.Tk):
 
         #Context Menu
         self.context_menu = tk.Menu(self.listbox_apps, tearoff=False)
+        self.context_menu.add_command(label='Run [r]', command=self.app_run)
         self.context_menu.add_command(label='Edit [e]', command=self.edit_launcher)
         self.context_menu.add_command(label='Config [c]', command=self.config_launcher)
         self.context_menu.add_separator()
@@ -639,7 +646,7 @@ class ZiaApp(tk.Tk):
         about = FormAbout(self)
         about.focus()
 
-    def app_run(self, e):
+    def app_run(self, e=None):
         program = None
         if self.listbox_apps.app_listbox.curselection():
             program = self.app_config.apps[self.listbox_apps.app_listbox.curselection()[0]]
@@ -655,12 +662,15 @@ class ZiaApp(tk.Tk):
             os.system(exec_cmd)
 
     def app_update(self, e):
+        print('=====> KEY PRESSED:', e.keycode)
         if e.keycode == self.KEY_D or e.keycode == self.KEY_DELETE:
             self.delete_launcher()
         elif e.keycode == self.KEY_E:
             self.edit_launcher()
         elif e.keycode == self.KEY_C:
             self.config_launcher()
+        elif e.keycode == self.KEY_R:
+            self.app_run(e)
         elif e.keycode == self.KEY_ESC:
             self.hide_context_menu(e)
 
