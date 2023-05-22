@@ -234,6 +234,7 @@ class FormWineTools(tk.Toplevel):
         button_explorer = ttk.Button(fmain, text='Explorer', command=self.wine_explorer)
         button_cmd = ttk.Button(fmain, text='CMD', command=self.wine_cmd)
         button_notepad = ttk.Button(fmain, text='Notepad', command=self.wine_notepad)
+        button_uninstaller = ttk.Button(fmain, text='Uninstaller', command=self.wine_uninstaller)
         button_close = ttk.Button(fmain, text='Close', command=self.destroy)
 
         fmain.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
@@ -242,6 +243,7 @@ class FormWineTools(tk.Toplevel):
         button_explorer.pack(side=tk.TOP, fill=tk.X)
         button_cmd.pack(side=tk.TOP, fill=tk.X)
         button_notepad.pack(side=tk.TOP, fill=tk.X)
+        button_uninstaller.pack(side=tk.TOP, fill=tk.X)
         button_close.pack(side=tk.TOP, fill=tk.X)
 
         self.grab_set()
@@ -258,6 +260,9 @@ class FormWineTools(tk.Toplevel):
 
     def wine_notepad(self):
         os.system(DEFAULT_WINE_EXEC.format(self.wineprefix, 'notepad &'))
+
+    def wine_uninstaller(self):
+        os.system(DEFAULT_WINE_EXEC.format(self.wineprefix, 'uninstaller &'))
 
     def wine_cmd(self):
         terminal_path = '/usr/bin/gnome-terminal'
@@ -611,7 +616,6 @@ class ZiaApp(tk.Tk):
         app_menu = tk.Menu(menubar, tearoff=0)
         app_menu.add_command(label='Containers', command=self.manage_containers)
         app_menu.add_separator()
-        app_menu.add_command(label='Reload', command=self.reload)
         app_menu.add_command(label='Exit', command=self.quit)
         menubar.add_cascade(label='App', menu=app_menu)
 
@@ -626,6 +630,7 @@ class ZiaApp(tk.Tk):
         self.context_menu.add_command(label='Run [r]', command=self.app_run)
         self.context_menu.add_command(label='Edit [e]', command=self.edit_launcher)
         self.context_menu.add_command(label='Config [c]', command=self.config_launcher)
+        self.context_menu.add_command(label='Reboot [b]', command=self.reboot)
         self.context_menu.add_separator()
         self.context_menu.add_command(label='Delete [d]', command=self.delete_launcher)
 
@@ -708,6 +713,18 @@ class ZiaApp(tk.Tk):
         # for app in self.app_config.apps:
         #     self.listbox_apps.app_listbox.insert(tk.END, "{}".format(app.get('label')))
         self.listbox_apps.populate()
+
+    def reboot(self):
+        if self.listbox_apps.app_listbox.curselection():
+            do_reboot = messagebox.askokcancel('Reboot', 'Are you sure want to reboot?', parent=self)
+            if do_reboot:
+                program_index = self.listbox_apps.app_listbox.curselection()[0]
+                program = self.app_config.apps[program_index]
+                reboot_cmd = DEFAULT_WINE_EXEC.format(program.get('wineprefix'), 'wineboot --restart')
+                print('=====> REBOOT:', reboot_cmd)
+                os.system(reboot_cmd)
+        else:
+            messagebox.showerror('Error', 'Please select a launcher', parent=self)
 
     def not_implemented(self, parent=None):
         messagebox.showinfo('Zia: Info', 'Feature not yet implemented', parent=parent if parent else self)
