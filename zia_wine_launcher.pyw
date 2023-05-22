@@ -20,6 +20,7 @@ APP_INI = 'app.ini'
 HOME_PATH = '/home/{}'.format(getpass.getuser())
 DEFAULT_WINEPREFIX = HOME_PATH + '/.wine'
 DEFAULT_WINE_EXEC = 'WINEARCH=win32 WINEPREFIX={} wine {}'
+DEFAULT_WINETRICKS_EXEC = 'WINEARCH=win32 WINEPREFIX={} winetricks {}'
 
 
 class AppConfig(object):
@@ -235,6 +236,7 @@ class FormWineTools(tk.Toplevel):
         button_cmd = ttk.Button(fmain, text='CMD', command=self.wine_cmd)
         button_notepad = ttk.Button(fmain, text='Notepad', command=self.wine_notepad)
         button_uninstaller = ttk.Button(fmain, text='Uninstaller', command=self.wine_uninstaller)
+        button_winetricks = ttk.Button(fmain, text='Winetricks', command=self.winetricks)
         button_close = ttk.Button(fmain, text='Close', command=self.destroy)
 
         fmain.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
@@ -244,6 +246,7 @@ class FormWineTools(tk.Toplevel):
         button_cmd.pack(side=tk.TOP, fill=tk.X)
         button_notepad.pack(side=tk.TOP, fill=tk.X)
         button_uninstaller.pack(side=tk.TOP, fill=tk.X)
+        button_winetricks.pack(side=tk.TOP, fill=tk.X)
         button_close.pack(side=tk.TOP, fill=tk.X)
 
         self.grab_set()
@@ -263,6 +266,9 @@ class FormWineTools(tk.Toplevel):
 
     def wine_uninstaller(self):
         os.system(DEFAULT_WINE_EXEC.format(self.wineprefix, 'uninstaller &'))
+
+    def winetricks(self):
+        os.system(DEFAULT_WINETRICKS_EXEC.format(self.wineprefix, ''))
 
     def wine_cmd(self):
         terminal_path = '/usr/bin/gnome-terminal'
@@ -630,6 +636,7 @@ class ZiaApp(tk.Tk):
         self.context_menu.add_command(label='Run [r]', command=self.app_run)
         self.context_menu.add_command(label='Edit [e]', command=self.edit_launcher)
         self.context_menu.add_command(label='Config [c]', command=self.config_launcher)
+        self.context_menu.add_command(label='Taskmgr [t]', command=self.taskmgr)
         self.context_menu.add_command(label='Reboot [b]', command=self.reboot)
         self.context_menu.add_separator()
         self.context_menu.add_command(label='Delete [d]', command=self.delete_launcher)
@@ -700,6 +707,14 @@ class ZiaApp(tk.Tk):
             program_index = self.listbox_apps.app_listbox.curselection()[0]
             program = self.app_config.apps[program_index]
             FormWineTools(parent=self, wineprefix=program.get('wineprefix'))
+        else:
+            messagebox.showerror('Error', 'Please select a launcher', parent=self)
+
+    def taskmgr(self):
+        if self.listbox_apps.app_listbox.curselection():
+            program_index = self.listbox_apps.app_listbox.curselection()[0]
+            program = self.app_config.apps[program_index]
+            os.system(DEFAULT_WINE_EXEC.format(program['wineprefix'], 'taskmgr &'))
         else:
             messagebox.showerror('Error', 'Please select a launcher', parent=self)
 
