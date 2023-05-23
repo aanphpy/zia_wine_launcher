@@ -622,7 +622,7 @@ class ZiaApp(tk.Tk):
         app_menu = tk.Menu(menubar, tearoff=0)
         app_menu.add_command(label='Containers', command=self.manage_containers)
         app_menu.add_separator()
-        app_menu.add_command(label='Exit', command=self.quit)
+        app_menu.add_command(label='Exit', command=self.app_quit)
         menubar.add_cascade(label='App', menu=app_menu)
 
         help_menu = tk.Menu(menubar, tearoff=0)
@@ -743,6 +743,13 @@ class ZiaApp(tk.Tk):
 
     def not_implemented(self, parent=None):
         messagebox.showinfo('Zia: Info', 'Feature not yet implemented', parent=parent if parent else self)
+
+    def app_quit(self):
+        print('=====> KILL C:\\ Process')
+        os.system('pkill -9 -f "C:*"')
+        print('=====> KILL WINE Process')
+        os.system('pkill -9 -f "wine*"')
+        self.quit()
 
 
 def run_app():
